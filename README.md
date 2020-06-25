@@ -26,8 +26,19 @@ positional arguments:
 
 optional arguments:
   -h, --help            show this help message and exit
-  -t TITLE [TITLE ...]  Title for circle graph. (Default = None)
-  -o OUT_DIR            Location for saved circle graph image. (Default = pwd)
+  -ccol [CCOL [CCOL ...]]
+                        Connections color list: Enter SPACE separated
+                        matplotlib color names. Req order: MM, MW, WM, WW,
+                        Unknown (DEFAULT: [red blue purple green white])
+  -lcol LCOL            Legend background color. Must be matplotlib color
+                        string. (DEFAULT = ghostwhite)
+  -ncol [NCOL [NCOL ...]]
+                        Node color list: Enter SPACE separated matplotlib
+                        color names. Req order: labels, MM, MW, WM, WW,
+                        Unknown (DEFAULT: [dimgrey red blue purple green
+                        white])
+  -o OUT_DIR            Location for saved circle graph image. (DEFAULT = pwd)
+  -t TITLE [TITLE ...]  Title for circle graph. (DEFAULT = None)
   -q                    Quiet mode suppresses all QA/extra info printouts.
                         (Errors always printed)
   -v, --version         show program's version number and exit

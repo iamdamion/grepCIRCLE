@@ -42,16 +42,38 @@ def main(argv=sys.argv):
     arg_parser.add_argument('authors_csv', type=os.path.abspath,
                             help='FULL path to Authors.csv file. (created with cleanBib[1] tool)'
                             )
-    arg_parser.add_argument('-t', action='store', type=str,
-                            nargs='+', required=False,
-                            help='Title for circle graph. (Default = None)',
-                            default=None,
-                            dest='title'
+    arg_parser.add_argument('-ccol', action='store', nargs='*',
+                            required=False, default=['red','blue','purple','green','white'],
+                            help='Connections color list: '
+                                 'Enter SPACE separated matplotlib color names. '
+                                 'Req order: MM, MW, WM, WW, Unknown '
+                                 '(DEFAULT: [red blue purple green white])',
+                            dest='ccol'
+                            )
+    arg_parser.add_argument('-lcol', action='store', type=str,
+                            required=False, default = 'ghostwhite',
+                            help='Legend background color. Must be matplotlib color string. '
+                            '(DEFAULT = ghostwhite)',
+                            dest='lcol'
+                            )
+    arg_parser.add_argument('-ncol', action='store', nargs='*',
+                            required=False, default=['dimgrey','red','blue','purple','green','white'],
+                            help='Node color list: '
+                                 'Enter SPACE separated matplotlib color names. '
+                                 'Req order: labels, MM, MW, WM, WW, Unknown '
+                                 '(DEFAULT: [dimgrey red blue purple green white])',
+                            dest='ncol'
                             )
     arg_parser.add_argument('-o', action='store', type=os.path.abspath, 
                             required=False, default=pwd,
-                            help='Location for saved circle graph image. (Default = pwd)',
+                            help='Location for saved circle graph image. (DEFAULT = pwd)',
                             dest='out_dir'
+                            )
+    arg_parser.add_argument('-t', action='store', type=str,
+                            nargs='+', required=False,
+                            help='Title for circle graph. (DEFAULT = None)',
+                            default=None,
+                            dest='title'
                             )
     arg_parser.add_argument('-q', action='store_true', required=False,
                             help='Quiet mode suppresses all QA/extra info '
@@ -78,6 +100,18 @@ def main(argv=sys.argv):
         logger.debug(f'-Authors.csv verified: {os.path.abspath(args.authors_csv)}')
     else:
         sys.exit('\nERROR: Authors.csv does not exist. Please verify path. Exiting...\n')
+    # Verify connection color list length
+    if len(args.ccol) == 5:
+        ccol = args.ccol
+        logger.debug(f'-Connection color list: {ccol}')
+    else:
+        sys.exit('\nERROR: User defined connection color list is an incorrect length. Please check. Exiting...\n')
+    # Verify node color list length
+    if len(args.ncol) == 6:
+        ncol = args.ncol
+        logger.debug(f'-Node color list: {ncol}')
+    else:
+        sys.exit('\nERROR: User defined node color list is an incorrect length. Please check. Exiting...\n')
     # Verify and format title
     if args.title:
         title = ' '.join(args.title)
@@ -102,17 +136,6 @@ def main(argv=sys.argv):
 
     # Global Label info
     type_labels = ['Spacer1','Man - Man','Man - Woman','Woman - Man','Woman - Woman','Unknown','Spacer2']
-
-    # Node, connection, and legend colors by list (make user defined later)
-    # current order: "types" (origin nodes), MM, MW, WM, WW, U
-    # Node Colors
-    node_color_list = ['dimgrey','red','blue','purple','green','white']
-    # Connection Colors
-    conn_color_list = ['red','blue','purple','green','white']
-    # Legend background color
-    legend_bg_color = 'ghostwhite'
-
-
 
     #################################################
     ##               DEFINE FUNCTIONS              ##
@@ -158,12 +181,12 @@ def main(argv=sys.argv):
     def make_circle(authors_df, label_names):
         ## Prep all labels, colors, etc 
         # Create node colors
-        types_colors = [node_color_list[0]] * len(type_labels)
-        mm_colors = [node_color_list[1]] * len(authors_df.loc[authors_df['GendCat'] == 'MM', 'CitationKey'])
-        mw_colors = [node_color_list[2]] * len(authors_df.loc[authors_df['GendCat'] == 'MW', 'CitationKey'])
-        wm_colors = [node_color_list[3]] * len(authors_df.loc[authors_df['GendCat'] == 'WM', 'CitationKey'])
-        ww_colors = [node_color_list[4]] * len(authors_df.loc[authors_df['GendCat'] == 'WW', 'CitationKey'])
-        u_colors = [node_color_list[5]] * len(authors_df.loc[authors_df['GendCat'].str.contains(r'U'), 'CitationKey'])
+        types_colors = [ncol[0]] * len(type_labels)
+        mm_colors = [ncol[1]] * len(authors_df.loc[authors_df['GendCat'] == 'MM', 'CitationKey'])
+        mw_colors = [ncol[2]] * len(authors_df.loc[authors_df['GendCat'] == 'MW', 'CitationKey'])
+        wm_colors = [ncol[3]] * len(authors_df.loc[authors_df['GendCat'] == 'WM', 'CitationKey'])
+        ww_colors = [ncol[4]] * len(authors_df.loc[authors_df['GendCat'] == 'WW', 'CitationKey'])
+        u_colors = [ncol[5]] * len(authors_df.loc[authors_df['GendCat'].str.contains(r'U'), 'CitationKey'])
 
         # LABEL COLORS GO IN THE ORIGINAL/MATRIX ORDER , not the reordered order!
         label_colors = types_colors + mm_colors + mw_colors + wm_colors + ww_colors + u_colors
@@ -198,20 +221,20 @@ def main(argv=sys.argv):
 
         ## Make custom colormap (if used)
         cmap = colors.ListedColormap(['black',
-                                      conn_color_list[0],conn_color_list[1],
-                                      conn_color_list[2],conn_color_list[3],
-                                      conn_color_list[4]])
+                                      ccol[0],ccol[1],
+                                      ccol[2],ccol[3],
+                                      ccol[4]])
         boundaries = [0, 1, 2, 3, 4, 5]
         norm = colors.BoundaryNorm(boundaries, cmap.N, clip=True)
 
         # Make Custom/Manual Legend
-        MM_patch = mpatches.Patch(color=conn_color_list[0], label='Man/Man')
-        MW_patch = mpatches.Patch(color=conn_color_list[1], label='Man/Woman')
-        WM_patch = mpatches.Patch(color=conn_color_list[2], label='Woman/Man')
-        WW_patch = mpatches.Patch(color=conn_color_list[3], label='Woman/Woman')
-        U_patch = mpatches.Patch(color=conn_color_list[4], label='Unknown')
+        MM_patch = mpatches.Patch(color=ccol[0], label='Man/Man')
+        MW_patch = mpatches.Patch(color=ccol[1], label='Man/Woman')
+        WM_patch = mpatches.Patch(color=ccol[2], label='Woman/Man')
+        WW_patch = mpatches.Patch(color=ccol[3], label='Woman/Woman')
+        U_patch = mpatches.Patch(color=ccol[4], label='Unknown')
         plt.gcf().legend(handles=[MM_patch,MW_patch,WM_patch,WW_patch,U_patch],
-                         loc=1,facecolor=legend_bg_color,prop={'size':35})
+                         loc=1, facecolor=args.lcol, prop={'size':35})
 
         ## Create Circle Graph
         plot_connectivity_circle(cite_mat, cleaned_titles,
