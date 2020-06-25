@@ -16,7 +16,7 @@ __references__ = """References
 [1] Zhou et al., 2020 https://doi.org/10.5281/zenodo.3672109 (https://github.com/dalejn/cleanBib)
 [2] Dworkin et al., 2020 https://doi.org/10.1038/s41593-020-0658-y
 """
-__version__ = "0.1.0"
+__version__ = "1.0.0"
 
 import argparse,datetime,logging,os,re,sys,time
 
