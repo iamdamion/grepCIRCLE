@@ -43,9 +43,9 @@ def main(argv=sys.argv):
                             help='FULL path to Authors.csv file. (created with cleanBib[1] tool)'
                             )
     arg_parser.add_argument('-ccol', action='store', nargs='*',
-                            required=False, default=['red','blue','purple','green','white'],
+                            required=False, default=['indianred','steelblue','mediumpurple','mediumseagreen','aliceblue'],
                             help='Connections color list: '
-                                 'Enter SPACE separated matplotlib color names. '
+                                 'Enter 5 SPACE separated matplotlib color names. '
                                  'Req order: MM, MW, WM, WW, Unknown '
                                  '(DEFAULT: [red blue purple green white])',
                             dest='ccol'
@@ -57,9 +57,9 @@ def main(argv=sys.argv):
                             dest='lcol'
                             )
     arg_parser.add_argument('-ncol', action='store', nargs='*',
-                            required=False, default=['dimgrey','red','blue','purple','green','white'],
+                            required=False, default=['dimgrey','tab:red','tab:blue','tab:purple','tab:green','white'],
                             help='Node color list: '
-                                 'Enter SPACE separated matplotlib color names. '
+                                 'Enter 6 SPACE separated matplotlib color names. '
                                  'Req order: labels, MM, MW, WM, WW, Unknown '
                                  '(DEFAULT: [dimgrey red blue purple green white])',
                             dest='ncol'
@@ -228,13 +228,15 @@ def main(argv=sys.argv):
         norm = colors.BoundaryNorm(boundaries, cmap.N, clip=True)
 
         # Make Custom/Manual Legend
-        MM_patch = mpatches.Patch(color=ccol[0], label='Man/Man')
-        MW_patch = mpatches.Patch(color=ccol[1], label='Man/Woman')
-        WM_patch = mpatches.Patch(color=ccol[2], label='Woman/Man')
-        WW_patch = mpatches.Patch(color=ccol[3], label='Woman/Woman')
-        U_patch = mpatches.Patch(color=ccol[4], label='Unknown')
+        MM_patch = mpatches.Patch(color=ncol[1], label='Man / Man')
+        MW_patch = mpatches.Patch(color=ncol[2], label='Man / Woman')
+        WM_patch = mpatches.Patch(color=ncol[3], label='Woman / Man')
+        WW_patch = mpatches.Patch(color=ncol[4], label='Woman / Woman')
+        U_patch = mpatches.Patch(color=ncol[5], label='Unknown')
         plt.gcf().legend(handles=[MM_patch,MW_patch,WM_patch,WW_patch,U_patch],
-                         loc=1, facecolor=args.lcol, prop={'size':35})
+                         loc=1, facecolor=args.lcol, prop={'size':35},
+                         title='Citation Type',
+                         title_fontsize=40)
 
         ## Create Circle Graph
         plot_connectivity_circle(cite_mat, cleaned_titles,
