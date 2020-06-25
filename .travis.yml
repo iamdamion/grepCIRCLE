@@ -7,4 +7,4 @@ install:
     - pip install -r requirements.txt
 
 script:
-  - python grepCIRCLE.py
+  - python grepCIRCLE.py ~/Box/0_RANDOM_PROJECTS/Citation_Bias_Circle_Graph/Demeter_2020_Authors.csv -t Demeter et al., 2020
