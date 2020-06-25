@@ -5,7 +5,7 @@ that is created by the [1] cleanBib github coding notebook. This
 visualization "add-on" will create a circle graph that can aid in 
 quickly assessing your bibliography's gender representation as
 described in Dworkin et al., 2020 [2] and can be used as an add-on 
-to you rdiversity statement or to visually track your papers' 
+to your diversity statement or to visually track your papers' 
 citations over time. 
 \n
 Originally created by Damion V. Demeter
@@ -13,8 +13,8 @@ Originally created by Damion V. Demeter
 """
 __references__ = """References
 ----------
-[1] https://github.com/dalejn/cleanBib
-[2] https://doi.org/10.1038/s41593-020-0658-y
+[1] Zhou et al., 2020 https://doi.org/10.5281/zenodo.3672109 (https://github.com/dalejn/cleanBib)
+[2] Dworkin et al., 2020 https://doi.org/10.1038/s41593-020-0658-y
 """
 __version__ = "0.1.0"
 
@@ -35,7 +35,7 @@ def main(argv=sys.argv):
                                          description=__doc__,
                                          formatter_class=argparse.RawDescriptionHelpFormatter,
                                          epilog=__references__,
-                                         usage='%(prog)s [OPTIONS]')
+                                         usage='%(prog)s authors_csv [OPTIONS]')
     # Check for arguments. #
     if len(sys.argv[1:])==0:
         print('\nArguments required. Use -h option to print FULL usage.\n')
@@ -44,18 +44,18 @@ def main(argv=sys.argv):
                             )
     arg_parser.add_argument('-t', action='store', type=str,
                             nargs='+', required=False,
-                            help='Title for circle graph. Default = None',
+                            help='Title for circle graph. (Default = None)',
                             default=None,
                             dest='title'
                             )
     arg_parser.add_argument('-o', action='store', type=os.path.abspath, 
                             required=False, default=pwd,
-                            help='Location for saved circle graph image. Default = pwd)',
+                            help='Location for saved circle graph image. (Default = pwd)',
                             dest='out_dir'
                             )
     arg_parser.add_argument('-q', action='store_true', required=False,
                             help='Quiet mode suppresses all QA/extra info '
-                                 'printouts. (Errors always printed.)',
+                                 'printouts. (Errors always printed)',
                             dest='quiet'
                             )
     arg_parser.add_argument('-v','--version', action='version', version='%(prog)s: ' + __version__)
