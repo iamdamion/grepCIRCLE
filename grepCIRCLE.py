@@ -103,6 +103,17 @@ def main(argv=sys.argv):
     # Global Label info
     type_labels = ['Spacer1','Man - Man','Man - Woman','Woman - Man','Woman - Woman','Unknown','Spacer2']
 
+    # Node, connection, and legend colors by list (make user defined later)
+    # current order: "types" (origin nodes), MM, MW, WM, WW, U
+    # Node Colors
+    node_color_list = ['dimgrey','red','blue','purple','green','white']
+    # Connection Colors
+    conn_color_list = ['red','blue','purple','green','white']
+    # Legend background color
+    legend_bg_color = 'ghostwhite'
+
+
+
     #################################################
     ##               DEFINE FUNCTIONS              ##
     #################################################
@@ -111,8 +122,8 @@ def main(argv=sys.argv):
         # first group into citation type ()
         MM = authors_df.loc[authors_df['GendCat'] == 'MM', 'CitationKey'].tolist()
         MW = authors_df.loc[authors_df['GendCat'] == 'MW', 'CitationKey'].tolist()
-        WW = authors_df.loc[authors_df['GendCat'] == 'WW', 'CitationKey'].tolist()
         WM = authors_df.loc[authors_df['GendCat'] == 'WM', 'CitationKey'].tolist()
+        WW = authors_df.loc[authors_df['GendCat'] == 'WW', 'CitationKey'].tolist()
         U = authors_df.loc[authors_df['GendCat'].str.contains(r'U'), 'CitationKey'].tolist()
 
         # arrange labels in CORRECT/MATRIX order (this must match the matrix axis order)
@@ -147,12 +158,12 @@ def main(argv=sys.argv):
     def make_circle(authors_df, label_names):
         ## Prep all labels, colors, etc 
         # Create node colors
-        types_colors = ['grey'] * len(type_labels)
-        mm_colors = ['red'] * len(authors_df.loc[authors_df['GendCat'] == 'MM', 'CitationKey'])
-        mw_colors = ['blue'] * len(authors_df.loc[authors_df['GendCat'] == 'MW', 'CitationKey'])
-        wm_colors = ['purple'] * len(authors_df.loc[authors_df['GendCat'] == 'WM', 'CitationKey'])
-        ww_colors = ['green'] * len(authors_df.loc[authors_df['GendCat'] == 'WW', 'CitationKey'])
-        u_colors = ['white'] * len(authors_df.loc[authors_df['GendCat'].str.contains(r'U'), 'CitationKey'])
+        types_colors = [node_color_list[0]] * len(type_labels)
+        mm_colors = [node_color_list[1]] * len(authors_df.loc[authors_df['GendCat'] == 'MM', 'CitationKey'])
+        mw_colors = [node_color_list[2]] * len(authors_df.loc[authors_df['GendCat'] == 'MW', 'CitationKey'])
+        wm_colors = [node_color_list[3]] * len(authors_df.loc[authors_df['GendCat'] == 'WM', 'CitationKey'])
+        ww_colors = [node_color_list[4]] * len(authors_df.loc[authors_df['GendCat'] == 'WW', 'CitationKey'])
+        u_colors = [node_color_list[5]] * len(authors_df.loc[authors_df['GendCat'].str.contains(r'U'), 'CitationKey'])
 
         # LABEL COLORS GO IN THE ORIGINAL/MATRIX ORDER , not the reordered order!
         label_colors = types_colors + mm_colors + mw_colors + wm_colors + ww_colors + u_colors
@@ -186,18 +197,21 @@ def main(argv=sys.argv):
         node_angles = circular_layout(label_names, node_order, start_pos=sp)
 
         ## Make custom colormap (if used)
-        cmap = colors.ListedColormap(['black','red','blue', 'purple', 'green', 'white'])
+        cmap = colors.ListedColormap(['black',
+                                      conn_color_list[0],conn_color_list[1],
+                                      conn_color_list[2],conn_color_list[3],
+                                      conn_color_list[4]])
         boundaries = [0, 1, 2, 3, 4, 5]
         norm = colors.BoundaryNorm(boundaries, cmap.N, clip=True)
 
         # Make Custom/Manual Legend
-        MM_patch = mpatches.Patch(color='red', label='Man/Man')
-        MW_patch = mpatches.Patch(color='blue', label='Man/Woman')
-        WM_patch = mpatches.Patch(color='purple', label='Woman/Man')
-        WW_patch = mpatches.Patch(color='green', label='Woman/Woman')
-        U_patch = mpatches.Patch(color='white', label='Unknown')
+        MM_patch = mpatches.Patch(color=conn_color_list[0], label='Man/Man')
+        MW_patch = mpatches.Patch(color=conn_color_list[1], label='Man/Woman')
+        WM_patch = mpatches.Patch(color=conn_color_list[2], label='Woman/Man')
+        WW_patch = mpatches.Patch(color=conn_color_list[3], label='Woman/Woman')
+        U_patch = mpatches.Patch(color=conn_color_list[4], label='Unknown')
         plt.gcf().legend(handles=[MM_patch,MW_patch,WM_patch,WW_patch,U_patch],
-                         loc=1,facecolor='whitesmoke',prop={'size':35})
+                         loc=1,facecolor=legend_bg_color,prop={'size':35})
 
         ## Create Circle Graph
         plot_connectivity_circle(cite_mat, cleaned_titles,
