@@ -51,9 +51,9 @@ def main(argv=sys.argv):
                             dest='ccol'
                             )
     arg_parser.add_argument('-lcol', action='store', type=str,
-                            required=False, default = 'ghostwhite',
+                            required=False, default='white',
                             help='Legend background color. Must be matplotlib color string. '
-                            '(DEFAULT = ghostwhite)',
+                            '(DEFAULT: white)',
                             dest='lcol'
                             )
     arg_parser.add_argument('-ncol', action='store', nargs='*',
@@ -66,12 +66,12 @@ def main(argv=sys.argv):
                             )
     arg_parser.add_argument('-o', action='store', type=os.path.abspath, 
                             required=False, default=pwd,
-                            help='Location for saved circle graph image. (DEFAULT = pwd)',
+                            help='Location for saved circle graph image. (DEFAULT: pwd)',
                             dest='out_dir'
                             )
     arg_parser.add_argument('-t', action='store', type=str,
                             nargs='+', required=False,
-                            help='Title for circle graph. (DEFAULT = None)',
+                            help='Title for circle graph. (DEFAULT: None)',
                             default=None,
                             dest='title'
                             )
@@ -211,7 +211,6 @@ def main(argv=sys.argv):
          
         logger.debug(f'\n-Cleaned titles list: {cleaned_titles}\n')
 
-
         ## PREP FIGURE ##
         fig = plt.figure(figsize=(30, 30), facecolor='black')
 
@@ -228,15 +227,17 @@ def main(argv=sys.argv):
         norm = colors.BoundaryNorm(boundaries, cmap.N, clip=True)
 
         # Make Custom/Manual Legend
-        MM_patch = mpatches.Patch(color=ncol[1], label='Man / Man')
-        MW_patch = mpatches.Patch(color=ncol[2], label='Man / Woman')
-        WM_patch = mpatches.Patch(color=ncol[3], label='Woman / Man')
-        WW_patch = mpatches.Patch(color=ncol[4], label='Woman / Woman')
-        U_patch = mpatches.Patch(color=ncol[5], label='Unknown')
-        plt.gcf().legend(handles=[MM_patch,MW_patch,WM_patch,WW_patch,U_patch],
-                         loc=1, facecolor=args.lcol, prop={'size':35},
-                         title='Citation Type',
-                         title_fontsize=40)
+        MM_patch = mpatches.Patch(facecolor=ncol[1], label='Man / Man', linewidth = 1, edgecolor = 'black')
+        MW_patch = mpatches.Patch(facecolor=ncol[2], label='Man / Woman', linewidth = 1, edgecolor = 'black')
+        WM_patch = mpatches.Patch(facecolor=ncol[3], label='Woman / Man', linewidth = 1, edgecolor = 'black')
+        WW_patch = mpatches.Patch(facecolor=ncol[4], label='Woman / Woman', linewidth = 1, edgecolor = 'black')
+        U_patch = mpatches.Patch(facecolor=ncol[5], label='Unknown', linewidth = 1, edgecolor = 'black')
+        legend = plt.gcf().legend(handles=[MM_patch,MW_patch,WM_patch,WW_patch,U_patch],
+                         loc=1, facecolor=args.lcol, framealpha=.98, prop={'size':35},
+                         fancybox=True, title='Citation Type',title_fontsize=40)
+
+        # change legen color text?
+        # plt.setp(legend.get_texts(), color='g')
 
         ## Create Circle Graph
         plot_connectivity_circle(cite_mat, cleaned_titles,

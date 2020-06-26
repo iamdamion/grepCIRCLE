@@ -15,9 +15,10 @@ This quick script is intended as a visulization "add-on" for the [Gender Diversi
 See planned updates list for upcoming improvements. Suggestions and pull requests are always welcome!  
 Use this freely wherever it can help (please cite if applicable). 
 
-## Requirements and Usage
-See requirement.txt file for current version requirements. 
+## Python Requirements and Usage
+See requirement.txt file for current version python library requirements. 
 
+Script usage output below:
 ```
 usage: grepCIRCLE.py authors_csv [OPTIONS]
 
@@ -33,7 +34,7 @@ optional arguments:
                         Unknown (DEFAULT: [red blue purple green white])
 
   -lcol LCOL            Legend background color. Must be matplotlib color
-                        string. (DEFAULT = ghostwhite)
+                        string. (DEFAULT = white)
 
   -ncol [NCOL [NCOL ...]]
                         Node color list: Enter 6 SPACE separated matplotlib
@@ -51,12 +52,20 @@ optional arguments:
   -v, --version         show program's version number and exit
 ```
 
+## Input and User Options
+File Inputs:  
+The only hard-required input is an Authors.csv file. (See Example_Cleaned_Authors.csv for format). This file is typically created using the cleanBib [1] notebook, however, the example template can be used to create this file manually. 
+
+User Options:  
+The default colors for the output follows the color scheme outlines in Dworkin et al., 2020 [1], but each group of colors can be changed via input options. See -h (script help) for details and updates, but at the time of this release, the node colors and connection colors take space separated lists. The legend patches uses the node color scheme and can not be definted separately. The legend background can also be changed (to ease the b/w contrast). 
+
+
 ## References:
 > [1] [D. Zhou, E. J. Cornblath, J. Stiso, E. G. Teich, J. D. Dworkin, A. S. Blevins, and D. S. Bassett, “Gender diversity statement and code notebook", v1.0, Zenodo, doi:10.5281/zenodo.3672109](https://github.com/dalejn/cleanBib) 
 
 > [2] [J. D. Dworkin, K. A. Linn, E. G. Teich, P. Zurn, R. T. Shinohara, and D. S. Bassett, “The extent and drivers of gender imbalance in neuroscience reference lists,” Nat Neurosci (2020). https://doi.org/10.1038/s41593-020-0658-y](https://doi.org/10.1038/s41593-020-0658-y) 
 
 ## Planned Updates
-- [ ] Order citations by year and add optional argument to highlight papers newer than X years.
-- [ ] Update order of source nodes and other small aesthetic updates. 
+- [ ] Order citations by year and add optional argument to highlight papers newer than X years
+- [ ] Update order of source nodes and other small aesthetic updates
 - [ ] Add metrics window on right side of circle with counts of citation types and confidence of gender from genderAPI
